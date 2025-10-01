@@ -7,6 +7,19 @@ import { Client } from "@upstash/qstash";
 export const runtime = "nodejs";
 const client = new Client();
 
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization",
+};
+
+export async function OPTIONS() {
+  return new Response(null, {
+    status: 200,
+    headers: corsHeaders,
+  });
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -25,7 +38,7 @@ export async function POST(request: NextRequest) {
         {
           error: "Missing required fields: name, email, phoneNumber, wheelId",
         },
-        { status: 400 }
+        { status: 400, headers: corsHeaders }
       );
     }
 
@@ -70,13 +83,13 @@ export async function POST(request: NextRequest) {
           numberOfSpins: Number(activity.numberOfSpins),
         },
       },
-      { status: 201 }
+      { status: 201, headers: corsHeaders }
     );
   } catch (error) {
     console.error("Error creating spin activity:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { status: 500, headers: corsHeaders }
     );
   }
 }
@@ -98,7 +111,7 @@ export async function PUT(request: NextRequest) {
     if (!id && !email) {
       return NextResponse.json(
         { error: "Either id or email is required for update" },
-        { status: 400 }
+        { status: 400, headers: corsHeaders }
       );
     }
 
@@ -114,7 +127,7 @@ export async function PUT(request: NextRequest) {
     if (!existingActivity) {
       return NextResponse.json(
         { error: "Spin activity not found" },
-        { status: 404 }
+        { status: 404, headers: corsHeaders }
       );
     }
 
@@ -160,13 +173,13 @@ export async function PUT(request: NextRequest) {
           numberOfSpins: Number(updatedActivity.numberOfSpins),
         },
       },
-      { status: 200 }
+      { status: 200, headers: corsHeaders }
     );
   } catch (error) {
     console.error("Error updating spin activity:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { status: 500, headers: corsHeaders }
     );
   }
 }
@@ -177,7 +190,10 @@ export async function PATCH(request: NextRequest) {
     const { email } = body;
 
     if (!email) {
-      return NextResponse.json({ error: "Email is required" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Email is required" },
+        { status: 400, headers: corsHeaders }
+      );
     }
 
     const existingActivity = await prisma.spinTheWheelActivity.findFirst({
@@ -188,7 +204,7 @@ export async function PATCH(request: NextRequest) {
     if (!existingActivity) {
       return NextResponse.json(
         { error: "Spin activity not found for this email" },
-        { status: 404 }
+        { status: 404, headers: corsHeaders }
       );
     }
 
@@ -199,19 +215,22 @@ export async function PATCH(request: NextRequest) {
       },
     });
 
-    return NextResponse.json({
-      success: true,
-      message: "Spin count incremented successfully",
-      activity: {
-        ...updatedActivity,
-        numberOfSpins: Number(updatedActivity.numberOfSpins),
+    return NextResponse.json(
+      {
+        success: true,
+        message: "Spin count incremented successfully",
+        activity: {
+          ...updatedActivity,
+          numberOfSpins: Number(updatedActivity.numberOfSpins),
+        },
       },
-    });
+      { headers: corsHeaders }
+    );
   } catch (error) {
     console.error("Error incrementing spin count:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { status: 500, headers: corsHeaders }
     );
   }
 }
