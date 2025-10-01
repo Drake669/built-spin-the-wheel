@@ -176,7 +176,7 @@ function buildCongratsHtml(activity: { name: string; prize?: string }) {
               <a href="https://x.com/built_africa" target="_blank" rel="noopener noreferrer" style="text-decoration: none; margin-left:8px;">
                 <img src="cid:twitter" alt="X (Twitter)" style="width: 24px; height: 24px;" />
               </a>
-              <a href="https://instagram.com/builtaccounting" target="_blank" rel="noopener noreferrer" style="text-decoration: none; margin-left:8px;">
+              <a href="https://www.instagram.com/built.africa/?hl=en" target="_blank" rel="noopener noreferrer" style="text-decoration: none; margin-left:8px;">
                 <img src="cid:instagram" alt="Instagram" style="width: 24px; height: 24px;" />
               </a>
               <a href="https://linkedin.com/company/built-accounting" target="_blank" rel="noopener noreferrer" style="text-decoration: none; margin-left:8px;">
