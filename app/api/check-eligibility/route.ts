@@ -34,6 +34,25 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    const currentDate = new Date();
+    const startDate = new Date("2025-10-06T00:00:00Z");
+    const endDate = new Date("2025-10-10T23:59:59Z");
+
+    if (currentDate < startDate || currentDate > endDate) {
+      return NextResponse.json(
+        {
+          eligible: false,
+          reason:
+            currentDate < startDate
+              ? "Customer Service Week hasn't started yet. Come back on October 6th, 2025!"
+              : "Customer Service Week has ended. Thank you for participating!",
+          hasWonPrize: false,
+          numberOfSpins: 0,
+        },
+        { headers: corsHeaders }
+      );
+    }
+
     const activity = await prisma.spinTheWheelActivity.findFirst({
       where: {
         email: email,
