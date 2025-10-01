@@ -2,8 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 import type { SpinActivityForEmail } from "@/lib/sendSpinEmails";
+import { Client } from "@upstash/qstash";
 
 export const runtime = "nodejs";
+const client = new Client();
 
 export async function POST(request: NextRequest) {
   try {
@@ -51,25 +53,13 @@ export async function POST(request: NextRequest) {
       createdAt: activity.createdAt,
     };
 
-    try {
-      const appUrl = process.env.NEXT_PUBLIC_BASE_URL;
-      if (appUrl) {
-        fetch(`${appUrl}/api/spin/email`, {
-          method: "POST",
-          body: JSON.stringify({
-            ...activityDataForEmail,
-            createdAt: activity.createdAt.toISOString(),
-          }),
-          headers: { "Content-Type": "application/json" },
-        }).catch((err) =>
-          console.error("[spin-activity] email trigger failed", err)
-        );
-      } else {
-        console.warn("NEXT_PUBLIC_BASE_URL not set; skipping email trigger");
-      }
-    } catch (e) {
-      console.error("[spin-activity] background email fetch error", e);
-    }
+    await client.publish({
+      url: `${process.env.NEXT_PUBLIC_BASE_URL}/api/spin/email`,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(activityDataForEmail),
+    });
 
     return NextResponse.json(
       {
@@ -153,25 +143,13 @@ export async function PUT(request: NextRequest) {
       createdAt: updatedActivity.createdAt,
     };
 
-    try {
-      const appUrl = process.env.NEXT_PUBLIC_BASE_URL;
-      if (appUrl) {
-        fetch(`${appUrl}/api/spin/email`, {
-          method: "POST",
-          body: JSON.stringify({
-            ...updatedActivityDataForEmail,
-            createdAt: updatedActivity.createdAt.toISOString(),
-          }),
-          headers: { "Content-Type": "application/json" },
-        }).catch((err) =>
-          console.error("[spin-activity] email trigger failed", err)
-        );
-      } else {
-        console.warn("NEXT_PUBLIC_BASE_URL not set; skipping email trigger");
-      }
-    } catch (e) {
-      console.error("[spin-activity] background email fetch error", e);
-    }
+    await client.publish({
+      url: `${process.env.NEXT_PUBLIC_BASE_URL}/api/spin/email`,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updatedActivityDataForEmail),
+    });
 
     return NextResponse.json(
       {
