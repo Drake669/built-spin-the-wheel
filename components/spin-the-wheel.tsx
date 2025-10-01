@@ -1,13 +1,28 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Button } from "@/components/ui/button";
 import confetti from "canvas-confetti";
+import { toast } from "sonner";
 
 interface Prize {
   label: string;
   color: string;
   textColor: string;
+}
+
+interface EligibilityData {
+  eligible: boolean;
+  hasWonPrize?: boolean;
+  numberOfSpins?: number;
+  reason?: string;
+  activity?: {
+    id: string;
+    name: string;
+    email: string;
+    phoneNumber: string;
+    prize: string | null;
+    wheelId: string;
+  };
 }
 
 const prizes: Prize[] = [
@@ -25,10 +40,32 @@ const prizes: Prize[] = [
   { label: "Try\nagain", color: "#6366f1", textColor: "#ffffff" },
 ];
 
-const SpinTheWheel = () => {
+interface SpinTheWheelProps {
+  wheelId: string;
+  email: string;
+  name: string;
+  phoneNumber: string;
+  initialEligibilityData: EligibilityData;
+}
+
+const SpinTheWheel = ({
+  wheelId,
+  email,
+  name,
+  phoneNumber,
+  initialEligibilityData,
+}: SpinTheWheelProps) => {
   const [isSpinning, setIsSpinning] = useState(false);
   const [rotation, setRotation] = useState(0);
   const [result, setResult] = useState<string | null>(null);
+  const [canSpin, setCanSpin] = useState(true);
+  const [activityId, setActivityId] = useState<string | null>(
+    initialEligibilityData?.activity?.id || null
+  );
+  const [numberOfSpins, setNumberOfSpins] = useState(
+    initialEligibilityData?.numberOfSpins || 0
+  );
+  const [message, setMessage] = useState<string | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const wheelRef = useRef<HTMLDivElement>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -175,11 +212,96 @@ const SpinTheWheel = () => {
     });
   };
 
+  const updateOrCreateActivity = async (
+    prize: string,
+    isWinningPrize: boolean
+  ) => {
+    try {
+      const newNumberOfSpins = numberOfSpins + 1;
+
+      if (!activityId) {
+        const response = await fetch("/api/spin-activity", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name,
+            email,
+            phoneNumber,
+            wheelId,
+            prize: isWinningPrize ? prize : null,
+            hasWonPrize: isWinningPrize,
+            numberOfSpins: newNumberOfSpins,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          toast.error("Failed to save your spin", {
+            description:
+              data.error || "Something went wrong. Please try again.",
+          });
+          return;
+        }
+
+        if (data.success) {
+          setActivityId(data.activity.id);
+          setNumberOfSpins(newNumberOfSpins);
+        }
+      } else {
+        const response = await fetch("/api/spin-activity", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: activityId,
+            prize: isWinningPrize ? prize : null,
+            hasWonPrize: isWinningPrize,
+            numberOfSpins: newNumberOfSpins,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          toast.error("Failed to update your activity", {
+            description:
+              data.error || "Something went wrong. Please try again.",
+          });
+          return;
+        }
+
+        if (data.success) {
+          setNumberOfSpins(newNumberOfSpins);
+        }
+      }
+
+      if (isWinningPrize) {
+        setCanSpin(false);
+        setMessage("Congratulations! You've won a prize!");
+        toast.success("🎉 Congratulations!", {
+          description: `You won: ${prize}`,
+        });
+      } else if (newNumberOfSpins >= 3) {
+        setCanSpin(false);
+        setMessage("You've reached the maximum number of spins.");
+        toast.info("Maximum spins reached", {
+          description: "Thank you for participating!",
+        });
+      }
+    } catch (error) {
+      console.error("Error updating activity:", error);
+      toast.error("Network error", {
+        description: "Unable to save your spin. Please check your connection.",
+      });
+    }
+  };
+
   const spinWheel = () => {
-    if (isSpinning) return;
+    if (isSpinning || !canSpin) return;
 
     setIsSpinning(true);
     setResult(null);
+    setMessage(null);
 
     playTickSound();
 
@@ -198,7 +320,7 @@ const SpinTheWheel = () => {
       wheelRef.current.style.transform = `rotate(${newRotation}deg)`;
     }
 
-    setTimeout(() => {
+    setTimeout(async () => {
       clearInterval(tickInterval);
 
       const finalRotation = newRotation % 360;
@@ -207,12 +329,13 @@ const SpinTheWheel = () => {
       const winningIndex =
         Math.floor(adjustedRotation / anglePerSegment) % prizes.length;
       const winningPrize = prizes[winningIndex].label.replace("\n", " ");
+      const isWinningPrize = !winningPrize.includes("Try again");
 
       setRotation(newRotation);
       setResult(winningPrize);
       setIsSpinning(false);
 
-      if (!winningPrize.includes("Try again")) {
+      if (isWinningPrize) {
         playCheering();
         triggerConfetti();
       }
@@ -220,19 +343,14 @@ const SpinTheWheel = () => {
       if (wheelRef.current) {
         wheelRef.current.style.transition = "none";
       }
+
+      // Update or create activity
+      await updateOrCreateActivity(winningPrize, isWinningPrize);
     }, 4000);
   };
 
   return (
     <div className="flex flex-col items-center justify-center gap-8 p-8 font-mono">
-      <div className="w-full max-w-xl mb-6">
-        <img
-          src="/customer-service-week.webp"
-          alt="Built Customer Service Week"
-          className="w-full h-full object-contain rounded-xl shadow-2xl"
-        />
-      </div>
-
       <h1 className="text-4xl md:text-5xl font-bold font-mono text-primary text-center">
         Spin to Win!
       </h1>
@@ -248,17 +366,34 @@ const SpinTheWheel = () => {
           <div ref={wheelRef} style={{ transform: `rotate(${rotation}deg)` }}>
             <canvas ref={canvasRef} width={500} height={500} />
           </div>
+
+          {/* Clickable Center Nob */}
+          <button
+            onClick={spinWheel}
+            disabled={isSpinning || !canSpin}
+            className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[70px] h-[70px] rounded-full z-20 flex items-center justify-center font-bold text-white transition-all duration-300 ${
+              isSpinning || !canSpin
+                ? "cursor-not-allowed opacity-70"
+                : "cursor-pointer hover:scale-110 hover:shadow-2xl active:scale-95"
+            }`}
+            style={{
+              background:
+                isSpinning || !canSpin
+                  ? "linear-gradient(145deg, #061f3d, #072E55)"
+                  : "linear-gradient(145deg, #072E55, #0a3d6e)",
+              boxShadow:
+                isSpinning || !canSpin
+                  ? "inset 2px 2px 5px rgba(0,0,0,0.3)"
+                  : "0 8px 15px rgba(7, 46, 85, 0.4), 0 0 20px rgba(7, 46, 85, 0.2)",
+            }}
+            aria-label="Spin the wheel"
+          >
+            <span className="text-xs font-mono text-center leading-tight">
+              {isSpinning ? "..." : canSpin ? "SPIN" : "DONE"}
+            </span>
+          </button>
         </div>
       </div>
-
-      <Button
-        onClick={spinWheel}
-        disabled={isSpinning}
-        size="lg"
-        className="text-lg px-8 py-6 font-bold bg-primary hover:bg-primary/90 text-primary-foreground disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-      >
-        {isSpinning ? "Spinning..." : "SPIN THE WHEEL"}
-      </Button>
 
       {result && (
         <div className="mt-4 p-6 bg-card rounded-lg border-2 border-primary shadow-lg animate-in fade-in zoom-in duration-500">
@@ -267,6 +402,18 @@ const SpinTheWheel = () => {
           </p>
         </div>
       )}
+
+      {message && (
+        <div className="mt-4 p-4 bg-yellow-500/20 border border-yellow-500 rounded-lg">
+          <p className="text-lg font-semibold text-center text-foreground">
+            {message}
+          </p>
+        </div>
+      )}
+
+      <div className="mt-2 text-sm text-muted-foreground">
+        <p>Spins: {numberOfSpins} / 3</p>
+      </div>
     </div>
   );
 };
