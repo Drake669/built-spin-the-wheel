@@ -277,9 +277,11 @@ const SpinTheWheel = ({
 
       if (isWinningPrize) {
         setCanSpin(false);
-        setMessage("Congratulations! You've won a prize!");
+        setMessage(
+          "Congratulations! You've won a prize! We will contact you shortly with the next steps to claim your reward."
+        );
         toast.success("🎉 Congratulations!", {
-          description: `You won: ${prize}`,
+          description: `You won: ${prize}! We'll contact you soon.`,
         });
       } else if (newNumberOfSpins >= 3) {
         setCanSpin(false);
