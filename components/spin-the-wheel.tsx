@@ -327,7 +327,7 @@ const SpinTheWheel = ({
 
       const finalRotation = newRotation % 360;
       const anglePerSegment = 360 / prizes.length;
-      const adjustedRotation = (360 - finalRotation + 90) % 360;
+      const adjustedRotation = (360 - finalRotation) % 360;
       const winningIndex =
         Math.floor(adjustedRotation / anglePerSegment) % prizes.length;
       const winningPrize = prizes[winningIndex].label.replace("\n", " ");
