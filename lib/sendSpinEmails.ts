@@ -107,14 +107,34 @@ export async function sendSpinActivityEmails(activity: SpinActivityForEmail) {
     console.error("[Email] Gmail->CustomerSuccess failed", err);
   }
 
-  try {
-    if (!csAppPassword) {
-      const transporterFallback = nodemailer.createTransport({
+  if (activity.hasWonPrize) {
+    try {
+      if (!csAppPassword) {
+        const transporterFallback = nodemailer.createTransport({
+          service: "gmail",
+          auth: { user: gmailUser, pass: gmailAppPassword },
+        });
+        await transporterFallback.sendMail({
+          from: `"Customer Success" <${csUser || gmailUser}>`,
+          to: activity.email,
+          subject: "Congratulations on your spin!",
+          text: `Hi ${
+            activity.name
+          },\n\nCongratulations on participating in Built's Spin-the-Wheel!${
+            activity.prize ? ` You won: ${activity.prize}.` : ""
+          } \n\nThanks for engaging with us!`,
+          html: buildCongratsHtml(activity),
+          attachments,
+        });
+        return;
+      }
+
+      const transporterCS = nodemailer.createTransport({
         service: "gmail",
-        auth: { user: gmailUser, pass: gmailAppPassword },
+        auth: { user: csUser, pass: csAppPassword },
       });
-      await transporterFallback.sendMail({
-        from: `"Customer Success" <${csUser || gmailUser}>`,
+      await transporterCS.sendMail({
+        from: `"Customer Success" <${csUser}>`,
         to: activity.email,
         subject: "Congratulations on your spin!",
         text: `Hi ${
@@ -125,27 +145,9 @@ export async function sendSpinActivityEmails(activity: SpinActivityForEmail) {
         html: buildCongratsHtml(activity),
         attachments,
       });
-      return;
+    } catch (err) {
+      console.error("[Email] CustomerSuccess->Participant failed", err);
     }
-
-    const transporterCS = nodemailer.createTransport({
-      service: "gmail",
-      auth: { user: csUser, pass: csAppPassword },
-    });
-    await transporterCS.sendMail({
-      from: `"Customer Success" <${csUser}>`,
-      to: activity.email,
-      subject: "Congratulations on your spin!",
-      text: `Hi ${
-        activity.name
-      },\n\nCongratulations on participating in Built's Spin-the-Wheel!${
-        activity.prize ? ` You won: ${activity.prize}.` : ""
-      } \n\nThanks for engaging with us!`,
-      html: buildCongratsHtml(activity),
-      attachments,
-    });
-  } catch (err) {
-    console.error("[Email] CustomerSuccess->Participant failed", err);
   }
 }
 

@@ -1,10 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
-import {
-  sendSpinActivityEmails,
-  type SpinActivityForEmail,
-} from "@/lib/sendSpinEmails";
+import type { SpinActivityForEmail } from "@/lib/sendSpinEmails";
 
 export const runtime = "nodejs";
 
@@ -54,7 +51,25 @@ export async function POST(request: NextRequest) {
       createdAt: activity.createdAt,
     };
 
-    await sendSpinActivityEmails(activityDataForEmail);
+    try {
+      const appUrl = process.env.NEXT_PUBLIC_BASE_URL;
+      if (appUrl) {
+        fetch(`${appUrl}/api/spin/email`, {
+          method: "POST",
+          body: JSON.stringify({
+            ...activityDataForEmail,
+            createdAt: activity.createdAt.toISOString(),
+          }),
+          headers: { "Content-Type": "application/json" },
+        }).catch((err) =>
+          console.error("[spin-activity] email trigger failed", err)
+        );
+      } else {
+        console.warn("NEXT_PUBLIC_BASE_URL not set; skipping email trigger");
+      }
+    } catch (e) {
+      console.error("[spin-activity] background email fetch error", e);
+    }
 
     return NextResponse.json(
       {
@@ -127,6 +142,36 @@ export async function PUT(request: NextRequest) {
       where: { id: existingActivity.id },
       data: updateData,
     });
+    const updatedActivityDataForEmail: SpinActivityForEmail = {
+      id: updatedActivity.id,
+      name: updatedActivity.name,
+      email: updatedActivity.email,
+      phoneNumber: updatedActivity.phoneNumber,
+      wheelId: updatedActivity.wheelId,
+      hasWonPrize: updatedActivity.hasWonPrize,
+      numberOfSpins: Number(updatedActivity.numberOfSpins),
+      createdAt: updatedActivity.createdAt,
+    };
+
+    try {
+      const appUrl = process.env.NEXT_PUBLIC_BASE_URL;
+      if (appUrl) {
+        fetch(`${appUrl}/api/spin/email`, {
+          method: "POST",
+          body: JSON.stringify({
+            ...updatedActivityDataForEmail,
+            createdAt: updatedActivity.createdAt.toISOString(),
+          }),
+          headers: { "Content-Type": "application/json" },
+        }).catch((err) =>
+          console.error("[spin-activity] email trigger failed", err)
+        );
+      } else {
+        console.warn("NEXT_PUBLIC_BASE_URL not set; skipping email trigger");
+      }
+    } catch (e) {
+      console.error("[spin-activity] background email fetch error", e);
+    }
 
     return NextResponse.json(
       {
