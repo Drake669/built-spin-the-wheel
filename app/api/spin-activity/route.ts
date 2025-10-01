@@ -301,7 +301,6 @@ async function sendSpinActivityEmails(activity: {
         activity.hasWonPrize ? "Yes" : "No"
       }\nSpins: ${activity.numberOfSpins}`,
       html: detailsHtml,
-      attachments,
     });
   } catch (err) {
     console.error("[Email] Gmail->CustomerSuccess failed", err);
