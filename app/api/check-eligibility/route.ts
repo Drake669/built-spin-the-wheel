@@ -7,10 +7,7 @@ export async function GET(request: NextRequest) {
     const email = searchParams.get("email");
     const wheelId = searchParams.get("wheelId");
 
-    console.log(email, wheelId, "HERERE\n\n\n\n\n");
-
     if (!email || email === "undefined" || email.trim() === "") {
-      console.log("Email parameter is required");
       return NextResponse.json(
         { error: "Email parameter is required" },
         { status: 400 }

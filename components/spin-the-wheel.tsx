@@ -398,7 +398,13 @@ const SpinTheWheel = ({
       {result && (
         <div className="mt-4 p-6 bg-card rounded-lg border-2 border-primary shadow-lg animate-in fade-in zoom-in duration-500">
           <p className="text-2xl font-bold text-center text-foreground">
-            🎉 You won: <span className="text-primary">{result}</span> 🎉
+            {result.toLowerCase().includes("try again") ? (
+              <span className="text-muted-foreground">{result}</span>
+            ) : (
+              <>
+                🎉 You won: <span className="text-primary">{result}</span> 🎉
+              </>
+            )}
           </p>
         </div>
       )}
