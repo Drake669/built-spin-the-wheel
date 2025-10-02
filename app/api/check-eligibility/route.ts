@@ -35,17 +35,31 @@ export async function GET(request: NextRequest) {
     }
 
     const currentDate = new Date();
-    const startDate = new Date("2025-10-08T08:00:00Z");
-    const endDate = new Date("2025-10-08T17:00:00Z");
+    const eventStartDate = new Date("2025-10-06T08:00:00Z");
+    const eventEndDate = new Date("2025-10-10T17:00:00Z");
 
-    if (currentDate < startDate || currentDate > endDate) {
+    if (currentDate < eventStartDate || currentDate > eventEndDate) {
       return NextResponse.json(
         {
           eligible: false,
           reason:
-            currentDate < startDate
-              ? "The spin event hasn't started yet. Come back on October 8th, 2025 at 8:00 AM GMT!"
+            currentDate < eventStartDate
+              ? "The spin event hasn't started yet. Come back from October 6th to 10th, 2025 between 8:00 AM and 5:00 PM GMT!"
               : "The spin event has ended. Thank you for participating!",
+          hasWonPrize: false,
+          numberOfSpins: 0,
+        },
+        { headers: corsHeaders }
+      );
+    }
+
+    const currentHour = currentDate.getUTCHours();
+    if (currentHour < 8 || currentHour >= 17) {
+      return NextResponse.json(
+        {
+          eligible: false,
+          reason:
+            "The spin event is only available between 8:00 AM and 5:00 PM GMT. Please come back during these hours!",
           hasWonPrize: false,
           numberOfSpins: 0,
         },

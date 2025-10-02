@@ -198,6 +198,7 @@ function buildCongratsHtml(activity: { name: string; prize?: string }) {
         }
         <p style="color: #333; font-size: 16px; line-height: 1.6;">Our team will get in touch with you to help claim your reward.</p>
         <p style="color: #333; font-size: 16px; line-height: 1.6;">Thank you for engaging with us — we truly value your time and support. Keep an eye out for more exciting promos and rewards from Built!</p>
+        <p style="color: #333; font-size: 16px; line-height: 1.6; margin-top: 16px;">Best regards,<br />The Built Team</p>
         <div style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee;">
           <img src="cid:footer" alt="Footer" style="max-width: 100%; height: auto;" />
           <div style="padding: 20px 0; text-align: center;">
@@ -232,6 +233,7 @@ function buildTryAgainHtml(activity: { name: string }) {
         <p style="color: #333; font-size: 16px; line-height: 1.6;">Thank you for participating in Built's Spin-the-Wheel promotion!</p>
         <p style="color: #333; font-size: 16px; line-height: 1.6;">This time, you landed on "Try Again" — but don't worry, there are still more chances to win exciting rewards in our future promos.</p>
         <p style="color: #333; font-size: 16px; line-height: 1.6;">We truly appreciate your time and engagement, and we can't wait to see you spin again!</p>
+        <p style="color: #333; font-size: 16px; line-height: 1.6; margin-top: 16px;">Best regards,<br />The Built Team</p>
         <div style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee;">
           <img src="cid:footer" alt="Footer" style="max-width: 100%; height: auto;" />
           <div style="padding: 20px 0; text-align: center;">
