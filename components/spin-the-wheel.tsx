@@ -422,6 +422,21 @@ const SpinTheWheel = ({
       <div className="mt-2 text-sm text-muted-foreground">
         <p>Spins: {numberOfSpins} / 3</p>
       </div>
+
+      <div className="mt-6 p-4 bg-muted/50 rounded-lg border border-muted-foreground/20 max-w-md">
+        <h3 className="text-sm font-semibold text-foreground mb-2">
+          Terms & Conditions:
+        </h3>
+        <ul className="text-xs text-muted-foreground space-y-1">
+          <li>
+            • Discounts are valid for 3 months and above subscriptions only
+          </li>
+          <li>
+            • Free 1 month subscription and discounts apply to Software Plans
+            only
+          </li>
+        </ul>
+      </div>
     </div>
   );
 };

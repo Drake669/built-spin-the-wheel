@@ -17,8 +17,8 @@ export async function OPTIONS() {
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
-    const email = searchParams.get("email");
-    const wheelId = searchParams.get("wheelId");
+    const email = decodeURIComponent(searchParams.get("email") || "");
+    const wheelId = decodeURIComponent(searchParams.get("wheelId") || "");
 
     if (!email || email === "undefined" || email.trim() === "") {
       return NextResponse.json(
@@ -35,8 +35,8 @@ export async function GET(request: NextRequest) {
     }
 
     const currentDate = new Date();
-    const startDate = new Date("2025-10-06T00:00:00Z");
-    const endDate = new Date("2025-10-10T23:59:59Z");
+    const startDate = new Date("2025-10-08T08:00:00Z");
+    const endDate = new Date("2025-10-08T17:00:00Z");
 
     if (currentDate < startDate || currentDate > endDate) {
       return NextResponse.json(
@@ -44,8 +44,8 @@ export async function GET(request: NextRequest) {
           eligible: false,
           reason:
             currentDate < startDate
-              ? "Customer Service Week hasn't started yet. Come back on October 6th, 2025!"
-              : "Customer Service Week has ended. Thank you for participating!",
+              ? "The spin event hasn't started yet. Come back on October 8th, 2025 at 8:00 AM GMT!"
+              : "The spin event has ended. Thank you for participating!",
           hasWonPrize: false,
           numberOfSpins: 0,
         },
