@@ -423,11 +423,11 @@ const SpinTheWheel = ({
         <p>Spins: {numberOfSpins} / 3</p>
       </div>
 
-      <div className="mt-6 p-4 bg-muted/50 rounded-lg border border-muted-foreground/20 max-w-md">
-        <h3 className="text-sm font-semibold text-foreground mb-2">
+      <div className="mt-6 p-4 bg-black/100 rounded-lg border border-muted-foreground/20 max-w-md">
+        <h3 className="text-sm font-semibold text-white mb-2">
           Terms & Conditions:
         </h3>
-        <ul className="text-xs text-muted-foreground space-y-1">
+        <ul className="text-xs text-white space-y-1">
           <li>
             • Discounts are valid for 3 months and above subscriptions only
           </li>
