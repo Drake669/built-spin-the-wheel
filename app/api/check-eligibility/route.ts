@@ -19,6 +19,7 @@ export async function GET(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams;
     const email = decodeURIComponent(searchParams.get("email") || "");
     const wheelId = decodeURIComponent(searchParams.get("wheelId") || "");
+    const countryCode = decodeURIComponent(searchParams.get("countryCode") || "")
 
     if (!email || email === "undefined" || email.trim() === "") {
       return NextResponse.json(
@@ -34,9 +35,28 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    if(!countryCode || countryCode === "undefined" || countryCode.trim() === "") {
+      return NextResponse.json(
+        { error: "Country code parameter is required" },
+        { status: 400, headers: corsHeaders }
+      );
+    }
+
+    if(countryCode !== "gh") {
+      return NextResponse.json(
+        {
+          eligible: false,
+          reason: "The spin event is only availble to people from Ghana!",
+          hasWonPrize: false,
+          numberOfSpins: 0,
+        },
+        { headers: corsHeaders }
+      );
+    }
+
     const currentDate = new Date();
-    const eventStartDate = new Date("2025-10-06T08:00:00Z");
-    const eventEndDate = new Date("2025-10-10T17:00:00Z");
+    const eventStartDate = new Date("2025-10-06T10:00:00Z");
+    const eventEndDate = new Date("2025-10-10T12:00:00Z");
 
     if (currentDate < eventStartDate || currentDate > eventEndDate) {
       return NextResponse.json(
@@ -44,7 +64,7 @@ export async function GET(request: NextRequest) {
           eligible: false,
           reason:
             currentDate < eventStartDate
-              ? "The spin event hasn't started yet. Come back from October 6th to 10th, 2025 between 8:00 AM and 5:00 PM GMT!"
+              ? "The spin event hasn't started yet. Come back from October 6th to 10th, 2025 between 10:00 AM and 12:00 PM GMT!"
               : "The spin event has ended. Thank you for participating!",
           hasWonPrize: false,
           numberOfSpins: 0,

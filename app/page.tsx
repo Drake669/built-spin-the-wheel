@@ -1,4 +1,5 @@
 import SpinWheel from "@/components/spin-the-wheel";
+import UserInfoForm from "@/components/user-info-form";
 
 export default async function Home({
   searchParams,
@@ -8,13 +9,14 @@ export default async function Home({
     email: string;
     name: string;
     phoneNumber: string;
+    countryCode: string;
   }>;
 }) {
-  const { wheelId, email, name, phoneNumber } = await searchParams;
+  const { wheelId, email, name, phoneNumber, countryCode } = await searchParams;
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
   const eligibility = await fetch(
-    `${baseUrl}/api/check-eligibility?wheelId=${wheelId}&email=${email}`,
+    `${baseUrl}/api/check-eligibility?wheelId=${wheelId}&email=${encodeURIComponent(email)}&countryCode=${countryCode}`,
     { cache: "no-store" }
   );
   const eligibilityData = await eligibility.json();
@@ -22,17 +24,35 @@ export default async function Home({
   let content;
 
   if (!eligibility.ok) {
-    content = (
-      <h1 className="text-4xl font-bold text-white bg-black/50 p-6 rounded-lg text-center">
-        You are not eligible to spin. {eligibilityData.error}
-      </h1>
-    );
+    if (!email || email === "undefined" || email.trim() === "") {
+      content = (
+        <UserInfoForm 
+          wheelId={wheelId} 
+          countryCode={countryCode} 
+        />
+      );
+    } else {
+      content = (
+        <h1 className="text-4xl font-bold text-white bg-black/50 p-6 rounded-lg text-center">
+          You are not eligible to spin. {eligibilityData.error}
+        </h1>
+      );
+    }
   } else if (!eligibilityData.eligible) {
-    content = (
-      <h1 className="text-4xl font-bold text-white bg-black/50 p-6 rounded-lg text-center">
-        You are not eligible to spin. {eligibilityData.reason}
-      </h1>
-    );
+    if (!email || email === "undefined" || email.trim() === "") {
+      content = (
+        <UserInfoForm 
+          wheelId={wheelId} 
+          countryCode={countryCode} 
+        />
+      );
+    } else {
+      content = (
+        <h1 className="text-4xl font-bold text-white bg-black/50 p-6 rounded-lg text-center">
+          You are not eligible to spin. {eligibilityData.reason}
+        </h1>
+      );
+    }
   } else {
     content = (
       <SpinWheel
@@ -55,7 +75,7 @@ export default async function Home({
           <img
             src="/customer-service-week.webp"
             alt="Built Customer Service Week"
-            className="w-full h-auto object-contain rounded-xl shadow-2xl"
+            className="w-[full] h-auto object-contain rounded-xl shadow-2xl"
           />
         </div>
 

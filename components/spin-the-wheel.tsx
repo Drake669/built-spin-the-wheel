@@ -346,7 +346,6 @@ const SpinTheWheel = ({
         wheelRef.current.style.transition = "none";
       }
 
-      // Update or create activity
       await updateOrCreateActivity(winningPrize, isWinningPrize);
     }, 4000);
   };
