@@ -79,6 +79,16 @@ const SpinTheWheel = ({
 
     cheeringAudioRef.current = new Audio("/crowd-cheering.mp3");
     cheeringAudioRef.current.volume = 0.7;
+
+    const handleResize = () => {
+      drawWheel();
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
   const drawWheel = () => {
@@ -87,6 +97,12 @@ const SpinTheWheel = ({
 
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
+
+    const isMobile = window.innerWidth < 768;
+    const canvasSize = isMobile ? Math.min(window.innerWidth - 40, 350) : 500;
+
+    canvas.width = canvasSize;
+    canvas.height = canvasSize;
 
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
@@ -108,7 +124,7 @@ const SpinTheWheel = ({
       ctx.fill();
 
       ctx.strokeStyle = "#ffffff";
-      ctx.lineWidth = 3;
+      ctx.lineWidth = isMobile ? 2 : 3;
       ctx.stroke();
 
       ctx.save();
@@ -117,10 +133,12 @@ const SpinTheWheel = ({
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillStyle = prize.textColor;
-      ctx.font = "bold 16px monospace, sans-serif";
+
+      const fontSize = isMobile ? 12 : 16;
+      ctx.font = `bold ${fontSize}px monospace, sans-serif`;
 
       const lines = prize.label.split("\n");
-      const lineHeight = 20;
+      const lineHeight = isMobile ? 16 : 20;
       const textRadius = radius * 0.65;
 
       lines.forEach((line, lineIndex) => {
@@ -131,12 +149,13 @@ const SpinTheWheel = ({
       ctx.restore();
     });
 
+    const centerRadius = isMobile ? 20 : 30;
     ctx.beginPath();
-    ctx.arc(centerX, centerY, 30, 0, 2 * Math.PI);
+    ctx.arc(centerX, centerY, centerRadius, 0, 2 * Math.PI);
     ctx.fillStyle = "#072E55";
     ctx.fill();
     ctx.strokeStyle = "#ffffff";
-    ctx.lineWidth = 4;
+    ctx.lineWidth = isMobile ? 3 : 4;
     ctx.stroke();
   };
 
@@ -351,28 +370,29 @@ const SpinTheWheel = ({
   };
 
   return (
-    <div className="flex flex-col items-center justify-center gap-8 p-8 font-mono">
-      <h1 className="text-4xl md:text-5xl font-bold font-mono text-primary text-center">
+    <div className="flex flex-col items-center justify-center gap-4 sm:gap-6 lg:gap-8 p-4 sm:p-6 lg:p-8 font-mono min-h-screen">
+      <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold font-mono text-primary text-center px-4">
         Spin to Win!
       </h1>
 
-      <div className="relative">
-        {/* Pointer */}
-        <div className="absolute -top-6 left-1/2 -translate-x-1/2 z-10">
-          <div className="w-0 h-0 border-l-[20px] border-l-transparent border-r-[20px] border-r-transparent border-t-[40px] border-t-primary drop-shadow-lg" />
+      <div className="relative w-full max-w-[500px]">
+        <div className="absolute -top-3 sm:-top-4 lg:-top-6 left-1/2 -translate-x-1/2 z-10">
+          <div className="w-0 h-0 border-l-[12px] sm:border-l-[16px] lg:border-l-[20px] border-l-transparent border-r-[12px] sm:border-r-[16px] lg:border-r-[20px] border-r-transparent border-t-[24px] sm:border-t-[32px] lg:border-t-[40px] border-t-primary drop-shadow-lg" />
         </div>
 
-        {/* Wheel Container */}
-        <div className="relative bg-card rounded-full p-4 shadow-2xl border-4 border-border">
+        <div className="relative bg-card rounded-full p-2 sm:p-3 lg:p-4 shadow-2xl border-2 sm:border-3 lg:border-4 border-border mx-auto">
           <div ref={wheelRef} style={{ transform: `rotate(${rotation}deg)` }}>
-            <canvas ref={canvasRef} width={500} height={500} />
+            <canvas
+              ref={canvasRef}
+              className="w-full h-auto max-w-full"
+              style={{ maxWidth: "100%", height: "auto" }}
+            />
           </div>
 
-          {/* Clickable Center Nob */}
           <button
             onClick={spinWheel}
             disabled={isSpinning || !canSpin}
-            className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[70px] h-[70px] rounded-full z-20 flex items-center justify-center font-bold text-white transition-all duration-300 ${
+            className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[50px] h-[50px] sm:w-[60px] sm:h-[60px] lg:w-[70px] lg:h-[70px] rounded-full z-20 flex items-center justify-center font-bold text-white transition-all duration-300 ${
               isSpinning || !canSpin
                 ? "cursor-not-allowed opacity-70"
                 : "cursor-pointer hover:scale-110 hover:shadow-2xl active:scale-95"
@@ -389,7 +409,7 @@ const SpinTheWheel = ({
             }}
             aria-label="Spin the wheel"
           >
-            <span className="text-xs font-mono text-center leading-tight">
+            <span className="text-[10px] sm:text-xs font-mono text-center leading-tight">
               {isSpinning ? "..." : canSpin ? "SPIN" : "DONE"}
             </span>
           </button>
@@ -397,8 +417,8 @@ const SpinTheWheel = ({
       </div>
 
       {result && (
-        <div className="mt-4 p-6 bg-card rounded-lg border-2 border-primary shadow-lg animate-in fade-in zoom-in duration-500">
-          <p className="text-2xl font-bold text-center text-foreground">
+        <div className="mt-2 sm:mt-4 p-4 sm:p-6 bg-card rounded-lg border-2 border-primary shadow-lg animate-in fade-in zoom-in duration-500 mx-4 sm:mx-0">
+          <p className="text-lg sm:text-xl lg:text-2xl font-bold text-center text-foreground">
             {result.toLowerCase().includes("try again") ? (
               <span className="text-muted-foreground">{result}</span>
             ) : (
@@ -411,22 +431,22 @@ const SpinTheWheel = ({
       )}
 
       {message && (
-        <div className="mt-4 p-4 bg-yellow-500/20 border border-yellow-500 rounded-lg">
-          <p className="text-lg font-semibold text-center text-foreground">
+        <div className="mt-2 sm:mt-4 p-3 sm:p-4 bg-yellow-500/20 border border-yellow-500 rounded-lg mx-4 sm:mx-0">
+          <p className="text-sm sm:text-base lg:text-lg font-semibold text-center text-foreground">
             {message}
           </p>
         </div>
       )}
 
-      <div className="mt-2 text-sm text-muted-foreground">
+      <div className="mt-2 text-xs sm:text-sm text-muted-foreground">
         <p>Spins: {numberOfSpins} / 3</p>
       </div>
 
-      <div className="mt-6 p-4 bg-black/100 rounded-lg border border-muted-foreground/20 max-w-md">
-        <h3 className="text-sm font-semibold text-white mb-2">
+      <div className="mt-4 sm:mt-6 p-3 sm:p-4 bg-black/100 rounded-lg border border-muted-foreground/20 max-w-md mx-4 sm:mx-0">
+        <h3 className="text-xs sm:text-sm font-semibold text-white mb-2">
           Terms & Conditions:
         </h3>
-        <ul className="text-xs text-white space-y-1">
+        <ul className="text-[10px] sm:text-xs text-white space-y-1">
           <li>
             • Discounts are valid for 3 months and above subscriptions only
           </li>

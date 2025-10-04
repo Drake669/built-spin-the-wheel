@@ -42,17 +42,42 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const activity = await prisma.spinTheWheelActivity.create({
-      data: {
-        name,
+    const existingActivity = await prisma.spinTheWheelActivity.findFirst({
+      where: {
         email,
-        phoneNumber,
         wheelId,
-        prize: prize || null,
-        hasWonPrize: hasWonPrize ?? false,
-        numberOfSpins: numberOfSpins ? BigInt(numberOfSpins) : BigInt(0),
       },
     });
+
+    let activity;
+
+    if (existingActivity) {
+      const updateData: Prisma.SpinTheWheelActivityUpdateInput = {
+        numberOfSpins: existingActivity.numberOfSpins + BigInt(1),
+      };
+
+      if (name !== undefined) updateData.name = name;
+      if (phoneNumber !== undefined) updateData.phoneNumber = phoneNumber;
+      if (prize !== undefined) updateData.prize = prize;
+      if (hasWonPrize !== undefined) updateData.hasWonPrize = hasWonPrize;
+
+      activity = await prisma.spinTheWheelActivity.update({
+        where: { id: existingActivity.id },
+        data: updateData,
+      });
+    } else {
+      activity = await prisma.spinTheWheelActivity.create({
+        data: {
+          name,
+          email,
+          phoneNumber,
+          wheelId,
+          prize: prize || null,
+          hasWonPrize: hasWonPrize ?? false,
+          numberOfSpins: numberOfSpins ? BigInt(numberOfSpins) : BigInt(1),
+        },
+      });
+    }
 
     const activityDataForEmail: SpinActivityForEmail = {
       id: activity.id,
@@ -77,16 +102,18 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         success: true,
-        message: "Spin activity created successfully",
+        message: existingActivity
+          ? "Spin activity updated successfully"
+          : "Spin activity created successfully",
         activity: {
           ...activity,
           numberOfSpins: Number(activity.numberOfSpins),
         },
       },
-      { status: 201, headers: corsHeaders }
+      { status: existingActivity ? 200 : 201, headers: corsHeaders }
     );
   } catch (error) {
-    console.error("Error creating spin activity:", error);
+    console.error("Error creating/updating spin activity:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500, headers: corsHeaders }
