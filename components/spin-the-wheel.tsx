@@ -27,17 +27,24 @@ interface EligibilityData {
 
 const prizes: Prize[] = [
   {
-    label: "Free 1 month\nsubscription",
+    label: "Subscription\nupgrade",
     color: "#e11d48",
     textColor: "#ffffff",
   },
-  { label: "10%\ndiscount", color: "#8b5cf6", textColor: "#ffffff" },
-  { label: "20%\ndiscount", color: "#eab308", textColor: "#000000" },
-  { label: "5%\ndiscount", color: "#06b6d4", textColor: "#000000" },
-  { label: "10gh\nairtime", color: "#ec4899", textColor: "#ffffff" },
-  { label: "15gh\nairtime", color: "#f97316", textColor: "#ffffff" },
-  { label: "20gh\nairtime", color: "#22c55e", textColor: "#ffffff" },
   { label: "Try\nagain", color: "#6366f1", textColor: "#ffffff" },
+  {
+    label: "Free Accounting\nTax Consultation",
+    color: "#f97316",
+    textColor: "#ffffff",
+  },
+  { label: "Try\nagain", color: "#6366f1", textColor: "#ffffff" },
+  { label: "T-Shirt", color: "#eab308", textColor: "#000000" },
+  { label: "Try\nagain", color: "#6366f1", textColor: "#ffffff" },
+  {
+    label: "GH100 E-Payment\nsubscription",
+    color: "#06b6d4",
+    textColor: "#ffffff",
+  },
 ];
 
 interface SpinTheWheelProps {
@@ -448,11 +455,8 @@ const SpinTheWheel = ({
         </h3>
         <ul className="text-[10px] sm:text-xs text-white space-y-1">
           <li>
-            • Discounts are valid for 3 months and above subscriptions only
-          </li>
-          <li>
-            • Free 1 month subscription and discounts apply to Software Plans
-            only
+            • For subscription upgrade: if you are on the highest tier plan
+            (Plus), no upgrade can be issued
           </li>
         </ul>
       </div>
