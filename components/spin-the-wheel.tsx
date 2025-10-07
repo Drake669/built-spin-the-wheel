@@ -53,7 +53,7 @@ const prizes: Prize[] = [
     textColor: "#ffffff",
   },
   {
-    label: "GH100 E-Payment\nsubscription",
+    label: "GHS100 E-Payment\ntopup",
     color: "#06b6d4",
     textColor: "#ffffff",
   },
@@ -467,8 +467,8 @@ const SpinTheWheel = ({
         </h3>
         <ul className="text-[10px] sm:text-xs text-white space-y-1">
           <li>
-            • For subscription upgrade: if you are on the highest tier plan
-            (Plus), no upgrade can be issued
+            Subscription upgrade is for software packages only and valid for 1
+            month.
           </li>
         </ul>
       </div>
