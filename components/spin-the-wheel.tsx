@@ -31,15 +31,27 @@ const prizes: Prize[] = [
     color: "#e11d48",
     textColor: "#ffffff",
   },
-  { label: "Try\nagain", color: "#6366f1", textColor: "#ffffff" },
+  {
+    label: "Thanks for\nparticipating",
+    color: "#6366f1",
+    textColor: "#ffffff",
+  },
   {
     label: "Free Accounting\nTax Consultation",
     color: "#f97316",
     textColor: "#ffffff",
   },
-  { label: "Try\nagain", color: "#6366f1", textColor: "#ffffff" },
+  {
+    label: "Thanks for\nparticipating",
+    color: "#6366f1",
+    textColor: "#ffffff",
+  },
   { label: "T-Shirt", color: "#eab308", textColor: "#000000" },
-  { label: "Try\nagain", color: "#6366f1", textColor: "#ffffff" },
+  {
+    label: "Thanks for\nparticipating",
+    color: "#6366f1",
+    textColor: "#ffffff",
+  },
   {
     label: "GH100 E-Payment\nsubscription",
     color: "#06b6d4",
@@ -301,19 +313,19 @@ const SpinTheWheel = ({
         }
       }
 
+      setCanSpin(false);
+
       if (isWinningPrize) {
-        setCanSpin(false);
         setMessage(
           "Congratulations! You've won a prize! We will contact you shortly with the next steps to claim your reward."
         );
         toast.success("🎉 Congratulations!", {
           description: `You won: ${prize}! We'll contact you soon.`,
         });
-      } else if (newNumberOfSpins >= 3) {
-        setCanSpin(false);
-        setMessage("You've reached the maximum number of spins.");
-        toast.info("Maximum spins reached", {
-          description: "Thank you for participating!",
+      } else {
+        setMessage("Thank you for participating!");
+        toast.info("Thank you for participating!", {
+          description: "Better luck next time!",
         });
       }
     } catch (error) {
@@ -357,7 +369,7 @@ const SpinTheWheel = ({
       const winningIndex =
         Math.floor(adjustedRotation / anglePerSegment) % prizes.length;
       const winningPrize = prizes[winningIndex].label.replace("\n", " ");
-      const isWinningPrize = !winningPrize.includes("Try again");
+      const isWinningPrize = !winningPrize.includes("Thanks for participating");
 
       setRotation(newRotation);
       setResult(winningPrize);
@@ -426,7 +438,7 @@ const SpinTheWheel = ({
       {result && (
         <div className="mt-2 sm:mt-4 p-4 sm:p-6 bg-card rounded-lg border-2 border-primary shadow-lg animate-in fade-in zoom-in duration-500 mx-4 sm:mx-0">
           <p className="text-lg sm:text-xl lg:text-2xl font-bold text-center text-foreground">
-            {result.toLowerCase().includes("try again") ? (
+            {result.toLowerCase().includes("thanks for participating") ? (
               <span className="text-muted-foreground">{result}</span>
             ) : (
               <>
@@ -446,7 +458,7 @@ const SpinTheWheel = ({
       )}
 
       <div className="mt-2 text-xs sm:text-sm text-muted-foreground">
-        <p>Spins: {numberOfSpins} / 3</p>
+        <p>Spins: {numberOfSpins} / 1</p>
       </div>
 
       <div className="mt-4 sm:mt-6 p-3 sm:p-4 bg-black/100 rounded-lg border border-muted-foreground/20 max-w-md mx-4 sm:mx-0">

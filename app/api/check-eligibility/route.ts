@@ -19,7 +19,9 @@ export async function GET(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams;
     const email = decodeURIComponent(searchParams.get("email") || "");
     const wheelId = decodeURIComponent(searchParams.get("wheelId") || "");
-    const countryCode = decodeURIComponent(searchParams.get("countryCode") || "")
+    const countryCode = decodeURIComponent(
+      searchParams.get("countryCode") || ""
+    );
 
     if (!email || email === "undefined" || email.trim() === "") {
       return NextResponse.json(
@@ -35,14 +37,18 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    if(!countryCode || countryCode === "undefined" || countryCode.trim() === "") {
+    if (
+      !countryCode ||
+      countryCode === "undefined" ||
+      countryCode.trim() === ""
+    ) {
       return NextResponse.json(
         { error: "Country code parameter is required" },
         { status: 400, headers: corsHeaders }
       );
     }
 
-    if(countryCode !== "gh") {
+    if (countryCode !== "gh") {
       return NextResponse.json(
         {
           eligible: false,
@@ -111,7 +117,7 @@ export async function GET(request: NextRequest) {
 
     const hasWonPrize = activity.hasWonPrize;
     const numberOfSpins = Number(activity.numberOfSpins);
-    const hasMaxSpins = numberOfSpins >= 3;
+    const hasMaxSpins = numberOfSpins >= 1;
     const isEligible = !hasWonPrize && !hasMaxSpins;
 
     return NextResponse.json(
