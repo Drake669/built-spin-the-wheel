@@ -42,7 +42,7 @@ const prizes: Prize[] = [
     textColor: "#ffffff",
   },
   {
-    label: "Thanks for\nparticipating",
+    label: "Built Notepad",
     color: "#6366f1",
     textColor: "#ffffff",
   },
@@ -53,7 +53,7 @@ const prizes: Prize[] = [
     textColor: "#ffffff",
   },
   {
-    label: "GHS100 E-Payment\ntopup",
+    label: "10% Discount\nCoupon",
     color: "#06b6d4",
     textColor: "#ffffff",
   },
@@ -467,8 +467,7 @@ const SpinTheWheel = ({
         </h3>
         <ul className="text-[10px] sm:text-xs text-white space-y-1">
           <li>
-            Subscription upgrade is for software packages only and valid for 1
-            month.
+          Coupons are valid for 3 months and above subscriptions only
           </li>
         </ul>
       </div>
