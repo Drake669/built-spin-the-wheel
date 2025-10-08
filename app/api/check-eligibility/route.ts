@@ -19,9 +19,6 @@ export async function GET(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams;
     const email = decodeURIComponent(searchParams.get("email") || "");
     const wheelId = decodeURIComponent(searchParams.get("wheelId") || "");
-    const countryCode = decodeURIComponent(
-      searchParams.get("countryCode") || ""
-    );
 
     if (!email || email === "undefined" || email.trim() === "") {
       return NextResponse.json(
@@ -34,29 +31,6 @@ export async function GET(request: NextRequest) {
       return NextResponse.json(
         { error: "Wheel ID parameter is required" },
         { status: 400, headers: corsHeaders }
-      );
-    }
-
-    if (
-      !countryCode ||
-      countryCode === "undefined" ||
-      countryCode.trim() === ""
-    ) {
-      return NextResponse.json(
-        { error: "Country code parameter is required" },
-        { status: 400, headers: corsHeaders }
-      );
-    }
-
-    if (countryCode !== "gh") {
-      return NextResponse.json(
-        {
-          eligible: false,
-          reason: "The spin event is only availble to people from Ghana!",
-          hasWonPrize: false,
-          numberOfSpins: 0,
-        },
-        { headers: corsHeaders }
       );
     }
 
