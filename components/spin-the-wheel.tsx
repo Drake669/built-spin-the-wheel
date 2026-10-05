@@ -27,7 +27,7 @@ interface EligibilityData {
 
 const prizes: Prize[] = [
   {
-    label: "Subscription\nupgrade",
+    label: "Subscription\nUpgrade",
     color: "#e11d48",
     textColor: "#ffffff",
   },
@@ -37,23 +37,27 @@ const prizes: Prize[] = [
     textColor: "#ffffff",
   },
   {
-    label: "Free Accounting\nTax Consultation",
+    label: "Virtual Account\nConsultation",
     color: "#f97316",
     textColor: "#ffffff",
   },
   {
-    label: "Built Notepad",
-    color: "#6366f1",
+    label: "Free 1 Month",
+    color: "#16a34a",
     textColor: "#ffffff",
   },
-  { label: "T-Shirt", color: "#eab308", textColor: "#000000" },
+  {
+    label: "Free Product\nTraining",
+    color: "#eab308",
+    textColor: "#000000",
+  },
   {
     label: "Thanks for\nparticipating",
     color: "#6366f1",
     textColor: "#ffffff",
   },
   {
-    label: "10% Discount\nCoupon",
+    label: "+2 Subscription\nMonths",
     color: "#06b6d4",
     textColor: "#ffffff",
   },
@@ -466,9 +470,8 @@ const SpinTheWheel = ({
           Terms & Conditions:
         </h3>
         <ul className="text-[10px] sm:text-xs text-white space-y-1">
-          <li>
-          Coupons are valid for 3 months and above subscriptions only
-          </li>
+          <li>Subscription upgrade: T&Cs apply</li>
+          <li>Virtual Account Consultation is a one-time session</li>
         </ul>
       </div>
     </div>
