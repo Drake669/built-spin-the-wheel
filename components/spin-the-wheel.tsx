@@ -33,32 +33,32 @@ const prizes: Prize[] = [
   },
   {
     label: "Thanks for\nparticipating",
-    color: "#6366f1",
-    textColor: "#ffffff",
+    color: "#ffffff",
+    textColor: "#0b2a6b",
   },
   {
     label: "Virtual Account\nConsultation",
-    color: "#f97316",
+    color: "#2563eb",
     textColor: "#ffffff",
   },
   {
     label: "Free 1 Month",
-    color: "#16a34a",
-    textColor: "#ffffff",
+    color: "#facc15",
+    textColor: "#0b2a6b",
   },
   {
     label: "Free Product\nTraining",
-    color: "#eab308",
-    textColor: "#000000",
-  },
-  {
-    label: "Thanks for\nparticipating",
-    color: "#6366f1",
+    color: "#f97316",
     textColor: "#ffffff",
   },
   {
+    label: "Thanks for\nparticipating",
+    color: "#ffffff",
+    textColor: "#0b2a6b",
+  },
+  {
     label: "+2 Subscription\nMonths",
-    color: "#06b6d4",
+    color: "#16a34a",
     textColor: "#ffffff",
   },
 ];
@@ -96,6 +96,7 @@ const SpinTheWheel = ({
 
   useEffect(() => {
     drawWheel();
+    document.fonts.ready.then(drawWheel);
     audioContextRef.current = new (window.AudioContext ||
       (window as typeof window & { webkitAudioContext: AudioContext })
         .webkitAudioContext)();
@@ -129,11 +130,32 @@ const SpinTheWheel = ({
 
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
-    const radius = canvas.width / 2 - 10;
+    const rimWidth = isMobile ? 14 : 20;
+    const radius = canvas.width / 2 - rimWidth;
     const numberOfSegments = prizes.length;
     const anglePerSegment = (2 * Math.PI) / numberOfSegments;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, canvas.width / 2, 0, 2 * Math.PI);
+    ctx.fillStyle = "#0b2a6b";
+    ctx.fill();
+
+    const bulbs = 28;
+    for (let i = 0; i < bulbs; i++) {
+      const angle = (i / bulbs) * 2 * Math.PI;
+      ctx.beginPath();
+      ctx.arc(
+        centerX + Math.cos(angle) * (radius + rimWidth / 2),
+        centerY + Math.sin(angle) * (radius + rimWidth / 2),
+        isMobile ? 2.5 : 3.5,
+        0,
+        2 * Math.PI
+      );
+      ctx.fillStyle = i % 2 ? "#ffffff" : "#facc15";
+      ctx.fill();
+    }
 
     prizes.forEach((prize, index) => {
       const startAngle = index * anglePerSegment - Math.PI / 2;
@@ -146,7 +168,7 @@ const SpinTheWheel = ({
       ctx.fillStyle = prize.color;
       ctx.fill();
 
-      ctx.strokeStyle = "#ffffff";
+      ctx.strokeStyle = "#0b2a6b";
       ctx.lineWidth = isMobile ? 2 : 3;
       ctx.stroke();
 
@@ -158,7 +180,7 @@ const SpinTheWheel = ({
       ctx.fillStyle = prize.textColor;
 
       const fontSize = isMobile ? 12 : 16;
-      ctx.font = `bold ${fontSize}px monospace, sans-serif`;
+      ctx.font = `bold ${fontSize}px "Circular Std", system-ui, sans-serif`;
 
       const lines = prize.label.split("\n");
       const lineHeight = isMobile ? 16 : 20;
@@ -175,9 +197,9 @@ const SpinTheWheel = ({
     const centerRadius = isMobile ? 20 : 30;
     ctx.beginPath();
     ctx.arc(centerX, centerY, centerRadius, 0, 2 * Math.PI);
-    ctx.fillStyle = "#072E55";
+    ctx.fillStyle = "#0b2a6b";
     ctx.fill();
-    ctx.strokeStyle = "#ffffff";
+    ctx.strokeStyle = "#facc15";
     ctx.lineWidth = isMobile ? 3 : 4;
     ctx.stroke();
   };
@@ -393,17 +415,24 @@ const SpinTheWheel = ({
   };
 
   return (
-    <div className="flex flex-col items-center justify-center gap-4 sm:gap-6 lg:gap-8 p-4 sm:p-6 lg:p-8 font-mono min-h-screen">
-      <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold font-mono text-primary text-center px-4">
-        Spin to Win!
-      </h1>
+    <div className="flex flex-col items-center justify-center gap-4 sm:gap-6 lg:gap-8 p-4 sm:p-6 lg:p-8 min-h-screen"
+      style={{ fontFamily: '"Circular Std", system-ui, sans-serif' }}
+    >
+      <div className="flex flex-col items-center gap-3 text-center px-4">
+        <span className="rounded-full bg-[#facc15] px-4 py-1 text-xs sm:text-sm font-bold uppercase tracking-widest text-[#0b2a6b]">
+          Customer Service Week 2026
+        </span>
+        <h1 className="text-3xl sm:text-4xl lg:text-6xl font-extrabold text-white drop-shadow-lg">
+          Go the Extra Mile. <span className="text-[#facc15]">Spin to Win!</span>
+        </h1>
+      </div>
 
       <div className="relative w-full max-w-[500px]">
         <div className="absolute -top-3 sm:-top-4 lg:-top-6 left-1/2 -translate-x-1/2 z-10">
-          <div className="w-0 h-0 border-l-[12px] sm:border-l-[16px] lg:border-l-[20px] border-l-transparent border-r-[12px] sm:border-r-[16px] lg:border-r-[20px] border-r-transparent border-t-[24px] sm:border-t-[32px] lg:border-t-[40px] border-t-primary drop-shadow-lg" />
+          <div className="w-0 h-0 border-l-[12px] sm:border-l-[16px] lg:border-l-[20px] border-l-transparent border-r-[12px] sm:border-r-[16px] lg:border-r-[20px] border-r-transparent border-t-[24px] sm:border-t-[32px] lg:border-t-[40px] border-t-[#facc15] drop-shadow-[0_4px_6px_rgba(0,0,0,0.4)]" />
         </div>
 
-        <div className="relative bg-card rounded-full p-2 sm:p-3 lg:p-4 shadow-2xl border-2 sm:border-3 lg:border-4 border-border mx-auto">
+        <div className="relative rounded-full p-1.5 sm:p-2 bg-[#facc15] mx-auto">
           <div ref={wheelRef} style={{ transform: `rotate(${rotation}deg)` }}>
             <canvas
               ref={canvasRef}
@@ -415,7 +444,7 @@ const SpinTheWheel = ({
           <button
             onClick={spinWheel}
             disabled={isSpinning || !canSpin}
-            className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[50px] h-[50px] sm:w-[60px] sm:h-[60px] lg:w-[70px] lg:h-[70px] rounded-full z-20 flex items-center justify-center font-bold text-white transition-all duration-300 ${
+            className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[50px] h-[50px] sm:w-[60px] sm:h-[60px] lg:w-[70px] lg:h-[70px] rounded-full z-20 flex items-center justify-center font-extrabold text-[#0b2a6b] transition-all duration-300 ${
               isSpinning || !canSpin
                 ? "cursor-not-allowed opacity-70"
                 : "cursor-pointer hover:scale-110 hover:shadow-2xl active:scale-95"
@@ -423,16 +452,16 @@ const SpinTheWheel = ({
             style={{
               background:
                 isSpinning || !canSpin
-                  ? "linear-gradient(145deg, #061f3d, #072E55)"
-                  : "linear-gradient(145deg, #072E55, #0a3d6e)",
+                  ? "linear-gradient(145deg, #cbd5e1, #94a3b8)"
+                  : "linear-gradient(145deg, #fde047, #f59e0b)",
               boxShadow:
                 isSpinning || !canSpin
                   ? "inset 2px 2px 5px rgba(0,0,0,0.3)"
-                  : "0 8px 15px rgba(7, 46, 85, 0.4), 0 0 20px rgba(7, 46, 85, 0.2)",
+                  : "0 0 0 4px #0b2a6b, 0 8px 20px rgba(250, 204, 21, 0.5)",
             }}
             aria-label="Spin the wheel"
           >
-            <span className="text-[10px] sm:text-xs font-mono text-center leading-tight">
+            <span className="text-[10px] sm:text-xs text-center leading-tight">
               {isSpinning ? "..." : canSpin ? "SPIN" : "DONE"}
             </span>
           </button>
@@ -454,18 +483,18 @@ const SpinTheWheel = ({
       )}
 
       {message && (
-        <div className="mt-2 sm:mt-4 p-3 sm:p-4 bg-yellow-500/20 border border-yellow-500 rounded-lg mx-4 sm:mx-0">
-          <p className="text-sm sm:text-base lg:text-lg font-semibold text-center text-foreground">
+        <div className="mt-2 sm:mt-4 p-3 sm:p-4 bg-[#facc15] rounded-lg mx-4 sm:mx-0">
+          <p className="text-sm sm:text-base lg:text-lg font-semibold text-center text-[#0b2a6b]">
             {message}
           </p>
         </div>
       )}
 
-      <div className="mt-2 text-xs sm:text-sm text-muted-foreground">
+      <div className="mt-2 text-xs sm:text-sm text-white/80">
         <p>Spins: {numberOfSpins} / 1</p>
       </div>
 
-      <div className="mt-4 sm:mt-6 p-3 sm:p-4 bg-black/100 rounded-lg border border-muted-foreground/20 max-w-md mx-4 sm:mx-0">
+      <div className="mt-4 sm:mt-6 p-3 sm:p-4 bg-white/10 backdrop-blur-md rounded-xl border border-white/20 max-w-md mx-4 sm:mx-0">
         <h3 className="text-xs sm:text-sm font-semibold text-white mb-2">
           Terms & Conditions:
         </h3>
