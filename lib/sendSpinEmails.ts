@@ -202,7 +202,7 @@ function buildCongratsHtml(activity: { name: string; prize?: string }) {
         <div style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee;">
           <img src="cid:footer" alt="Footer" style="max-width: 100%; height: auto;" />
           <div style="padding: 20px 0; text-align: center;">
-            <p style="color: #64748b; font-size: 14px; margin: 0 0 15px 0; text-align: center;">Copyright © 2025 Built Financial Technologies.</p>
+            <p style="color: #64748b; font-size: 14px; margin: 0 0 15px 0; text-align: center;">Copyright © 2026 Built Financial Technologies.</p>
             <div style="text-align: center; margin-bottom: 20px;">
               <a href="https://facebook.com/builtaccounting" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">
                 <img src="cid:facebook" alt="Facebook" style="width: 24px; height: 24px;" />
@@ -237,7 +237,7 @@ function buildTryAgainHtml(activity: { name: string }) {
         <div style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee;">
           <img src="cid:footer" alt="Footer" style="max-width: 100%; height: auto;" />
           <div style="padding: 20px 0; text-align: center;">
-            <p style="color: #64748b; font-size: 14px; margin: 0 0 15px 0; text-align: center;">Copyright © 2025 Built Financial Technologies.</p>
+            <p style="color: #64748b; font-size: 14px; margin: 0 0 15px 0; text-align: center;">Copyright © 2026 Built Financial Technologies.</p>
             <div style="text-align: center; margin-bottom: 20px;">
               <a href="https://facebook.com/builtaccounting" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">
                 <img src="cid:facebook" alt="Facebook" style="width: 24px; height: 24px;" />
