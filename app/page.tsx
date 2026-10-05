@@ -33,7 +33,7 @@ export default async function Home({
       );
     } else {
       content = (
-        <h1 className="text-4xl font-bold text-white bg-black/50 p-6 rounded-lg text-center">
+        <h1 className="text-2xl sm:text-3xl font-bold text-white bg-white/10 backdrop-blur-md border border-white/20 p-6 rounded-2xl text-center max-w-xl">
           You are not eligible to spin. {eligibilityData.error}
         </h1>
       );
@@ -48,7 +48,7 @@ export default async function Home({
       );
     } else {
       content = (
-        <h1 className="text-4xl font-bold text-white bg-black/50 p-6 rounded-lg text-center">
+        <h1 className="text-2xl sm:text-3xl font-bold text-white bg-white/10 backdrop-blur-md border border-white/20 p-6 rounded-2xl text-center max-w-xl">
           You are not eligible to spin. {eligibilityData.reason}
         </h1>
       );
@@ -67,15 +67,14 @@ export default async function Home({
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center bg-cover bg-center bg-no-repeat p-4 lg:p-8"
-      style={{ backgroundImage: "url('/bg-3.jpg')" }}
+      className="min-h-screen flex items-center justify-center p-4 lg:p-8 bg-[#0b2a6b]"
     >
       <div className="flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-12 max-w-7xl mx-auto">
-        <div className="w-full max-w-md lg:max-w-lg flex-shrink-0">
+        <div className="w-full max-w-md lg:max-w-lg shrink-0">
           <img
-            src="/customer-service-week.webp"
+            src="/customer-service.png"
             alt="Built Customer Service Week"
-            className="w-[full] h-auto object-contain rounded-xl shadow-2xl"
+            className="w-full h-auto object-contain rounded-2xl shadow-2xl ring-4 ring-white/20"
           />
         </div>
 
