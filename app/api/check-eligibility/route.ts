@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
 
     const currentDate = new Date();
     const eventStartDate = new Date("2026-10-07T12:00:00Z");
-    const eventEndDate = new Date("2026-10-09T14:00:00Z");
+    const eventEndDate = new Date("2026-10-09T16:00:00Z");
 
     if (currentDate < eventStartDate || currentDate > eventEndDate) {
       return NextResponse.json(
@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
           eligible: false,
           reason:
             currentDate < eventStartDate
-              ? "The spin event hasn't started yet. Come back from Wednesday 7th to Friday 9th October 2026, between 12:00 PM and 2:00 PM GMT!"
+              ? "The spin event hasn't started yet. Come back from Wednesday 7th to Friday 9th October 2026, between 12:00 PM and 4:00 PM GMT!"
               : "The spin event has ended. Thank you for participating!",
           hasWonPrize: false,
           numberOfSpins: 0,
@@ -54,12 +54,12 @@ export async function GET(request: NextRequest) {
     }
 
     const currentHour = currentDate.getUTCHours();
-    if (currentHour < 12 || currentHour >= 14) {
+    if (currentHour < 12 || currentHour >= 16) {
       return NextResponse.json(
         {
           eligible: false,
           reason:
-            "The spin event is only available between 12:00 PM and 2:00 PM GMT. Please come back during these hours!",
+            "The spin event is only available between 12:00 PM and 4:00 PM GMT. Please come back during these hours!",
           hasWonPrize: false,
           numberOfSpins: 0,
         },
