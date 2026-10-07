@@ -305,6 +305,10 @@ const SpinTheWheel = ({
             description:
               data.error || "Something went wrong. Please try again.",
           });
+          if (response.status === 409) {
+            setResult(null);
+            setMessage(data.error);
+          }
           return;
         }
 
@@ -365,6 +369,7 @@ const SpinTheWheel = ({
   const spinWheel = () => {
     if (isSpinning || !canSpin) return;
 
+    setCanSpin(false);
     setIsSpinning(true);
     setResult(null);
     setMessage(null);
@@ -501,6 +506,7 @@ const SpinTheWheel = ({
         <ul className="text-[10px] sm:text-xs text-white space-y-1">
           <li>Subscription upgrade: T&Cs apply</li>
           <li>Virtual Account Consultation is a one-time session</li>
+          <li>One spin per person. If more than one spin is recorded, only the first spin counts</li>
         </ul>
       </div>
     </div>
