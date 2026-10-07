@@ -13,6 +13,19 @@ export type SpinActivityForEmail = {
   createdAt: string | Date;
 };
 
+function prizeTerms(prize?: string) {
+  return prize?.startsWith("+2 Subscription")
+    ? "This only applies to 1 year subscription on Starter & Enterprise packages"
+    : null;
+}
+
+function buildCongratsText(activity: { name: string; prize?: string }) {
+  const terms = prizeTerms(activity.prize);
+  return `Hi ${activity.name},\n\nCongratulations on participating in Built's Spin-the-Wheel promotion!\nWe're excited to let you know that you've won:\n ${activity.prize}\n${
+    terms ? `\nTs & Cs: ${terms}\n` : ""
+  }Our team will get in touch with you to help claim your reward.\nThank you for engaging with us — we truly value your time and support. Keep an eye out for more exciting promos and rewards from Built!\n\nBest regards,\nThe Built Team`;
+}
+
 export async function sendSpinActivityEmails(activity: SpinActivityForEmail) {
   const gmailUser = process.env.GMAIL_USER;
   const gmailAppPassword = process.env.GMAIL_APP_PASSWORD;
@@ -119,7 +132,7 @@ export async function sendSpinActivityEmails(activity: SpinActivityForEmail) {
           to: activity.email,
           subject:
             "Congratulations! You've Won in Built's Spin-the-Wheel Promo",
-          text: `Hi ${activity.name},\n\nCongratulations on participating in Built's Spin-the-Wheel promotion!\nWe're excited to let you know that you've won:\n ${activity.prize}\nOur team will get in touch with you to help claim your reward.\nThank you for engaging with us — we truly value your time and support. Keep an eye out for more exciting promos and rewards from Built!\n\nBest regards,\nThe Built Team`,
+          text: buildCongratsText(activity),
           html: buildCongratsHtml(activity),
           attachments,
         });
@@ -134,7 +147,7 @@ export async function sendSpinActivityEmails(activity: SpinActivityForEmail) {
         from: `"Customer Success" <${csUser}>`,
         to: activity.email,
         subject: "Congratulations! You've Won in Built's Spin-the-Wheel Promo",
-        text: `Hi ${activity.name},\n\nCongratulations on participating in Built's Spin-the-Wheel promotion!\nWe're excited to let you know that you've won:\n ${activity.prize}\nOur team will get in touch with you to help claim your reward.\nThank you for engaging with us — we truly value your time and support. Keep an eye out for more exciting promos and rewards from Built!\n\nBest regards,\nThe Built Team`,
+        text: buildCongratsText(activity),
         html: buildCongratsHtml(activity),
         attachments,
       });
@@ -181,6 +194,7 @@ export async function sendSpinActivityEmails(activity: SpinActivityForEmail) {
 }
 
 function buildCongratsHtml(activity: { name: string; prize?: string }) {
+  const terms = prizeTerms(activity.prize);
   return `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
         <div style="text-align: center; margin-bottom: 30px;">
@@ -194,6 +208,11 @@ function buildCongratsHtml(activity: { name: string; prize?: string }) {
         ${
           activity.prize
             ? `<p style="color: #333; font-size: 18px; line-height: 1.6; font-weight: bold; text-align: center; background-color: #f0f9ff; padding: 15px; border-radius: 8px; margin: 20px 0;">${activity.prize}</p>`
+            : ""
+        }
+        ${
+          terms
+            ? `<p style="color: #333; font-size: 14px; line-height: 1.6; background-color: #fefce8; border-left: 4px solid #facc15; padding: 10px 14px; margin: 0 0 20px 0;"><strong>Ts &amp; Cs:</strong> ${terms.replace("&", "&amp;")}</p>`
             : ""
         }
         <p style="color: #333; font-size: 16px; line-height: 1.6;">Our team will get in touch with you to help claim your reward.</p>

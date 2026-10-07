@@ -178,6 +178,7 @@ export async function PUT(request: NextRequest) {
       email: updatedActivity.email,
       phoneNumber: updatedActivity.phoneNumber,
       wheelId: updatedActivity.wheelId,
+      prize: updatedActivity.prize ?? undefined,
       hasWonPrize: updatedActivity.hasWonPrize,
       numberOfSpins: Number(updatedActivity.numberOfSpins),
       createdAt: updatedActivity.createdAt,
